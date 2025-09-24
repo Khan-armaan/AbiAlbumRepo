@@ -3,6 +3,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./config/swagger";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { userRouter } from "./routes/user.routes";
 
 
 const app = express();
@@ -55,6 +56,9 @@ app.get("/api/v1/hello", (req: Request, res: Response) => {
   res.json({ message: "Hello, World!" });
 });
 
+
+//routes
+app.use('/api/v1/users', userRouter);
 
 
 // Start the server
