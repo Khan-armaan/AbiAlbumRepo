@@ -14,13 +14,187 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  phone      String   @unique
-  password   String
-  name       String
-  pincode    String?
-  address    String? 
 
+
+
+// --------------------------
+// ENUMS
+// --------------------------
+
+enum MembershipRole {
+  FRIEND  // The user is considered a "friend" of the album owner
+  FAMILY  // The user is considered "family" of the album owner
+}
+
+enum MembershipStatus {
+  PENDING   // User has requested to join the album or is awaiting approval
+  APPROVED  // User has been approved to join the album
+  REJECTED  // User request to join was rejected
+}
+
+enum MediaType {
+  IMAGE  // Media is an image
+  VIDEO  // Media is a video
+  OTHER  // Any other type of media
+}
+
+enum ReactionType {
+  LIKE    // User liked the album
+  DISLIKE // User disliked the album
+}
+
+// --------------------------
+// USER
+// --------------------------
+model User {
+  id             Int                @id @default(autoincrement()) // Unique user ID
+  name           String                                     // User's full name
+  email          String             @unique                   // User email, must be unique
+  phone          String?            @unique                   // Optional phone number, unique if provided
+  profileImage   String?                                   // URL of profile image
+  about          String?                                   // About me section
+  albumsOwned    Album[]            @relation("ownerAlbums")  // Albums owned/created by this user
+  mediaUploads   Media[]            @relation("uploaderMedia") // Media uploaded by the user
+  memberships    AlbumMembership[]                             // Albums the user has joined as friend/family
+  albumReactions AlbumReaction[]                              // Reactions (like/dislike) made by the user
+  albumComments  AlbumComment[]                               // Comments made by the user
+
+  createdAt      DateTime           @default(now())          // Timestamp of user creation
+  updatedAt      DateTime           @updatedAt               // Timestamp of last update
+
+  @@index([email])
+  @@index([phone])
+}
+
+// --------------------------
+// ALBUM
+// --------------------------
+model Album {
+  id             Int                @id @default(autoincrement()) // Unique album ID
+  title          String                                     // Album title
+  description    String?                                    // Optional description
+  ownerId        Int                                        // Reference to the album owner
+  owner          User               @relation("ownerAlbums", fields: [ownerId], references: [id]) // Album owner relation
+  slug           String?            @unique                   // Optional unique slug for URL-friendly links
+  isPublic       Boolean            @default(false)          // Public or private album
+
+  sections       AlbumSection[]                             // Sections within the album (e.g., My Photos, My Videos)
+  media          Media[]                                    // Media uploaded to album (flattened)
+  memberships    AlbumMembership[]                          // Users who joined this album (friend/family)
+  reactions      AlbumReaction[]                            // Likes/dislikes on this album
+  comments       AlbumComment[]                             // Messages/comments on the album
+
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([ownerId])
+  @@index([slug])
+}
+
+// --------------------------
+// ALBUM SECTION
+// --------------------------
+model AlbumSection {
+  id          Int      @id @default(autoincrement())      // Unique section ID
+  albumId     Int                                       // Reference to parent album
+  album       Album    @relation(fields: [albumId], references: [id])
+  title       String                                     // Section title (e.g., My Photos, My Videos)
+  description String?                                   // Optional description of section
+  order       Int?                                      // Optional order for UI display
+  media       Media[]                                   // Media items in this section
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([albumId, title]) // Section titles must be unique within the same album
+  @@index([albumId])
+}
+
+// --------------------------
+// MEDIA
+// --------------------------
+model Media {
+  id           Int       @id @default(autoincrement())    // Unique media ID
+  albumId      Int                                        // Parent album ID
+  album        Album     @relation(fields: [albumId], references: [id])
+  sectionId    Int?       // Optional: section this media belongs to
+  section      AlbumSection? @relation(fields: [sectionId], references: [id])
+  uploaderId   Int       // Who uploaded the media
+  uploader     User      @relation("uploaderMedia", fields: [uploaderId], references: [id])
+  type         MediaType @default(IMAGE)                 // Type of media: IMAGE/VIDEO/OTHER
+  url          String                                     // Storage URL (S3/MinIO/CDN)
+  filename     String?                                    // Original filename
+  // mimeType     String?                                    // MIME type
+  // sizeBytes    Int?                                       // Size in bytes
+  // width        Int?                                       // Image/video width
+  // height       Int?                                       // Image/video height
+  // durationMs   Int?                                       // Duration for video
+  caption      String?                                    // Optional caption
+  metadata     Json?                                      // Optional metadata (EXIF, thumbnails, etc.)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([albumId])
+  @@index([uploaderId])
+  @@index([sectionId])
+}
+
+// --------------------------
+// ALBUM MEMBERSHIP
+// --------------------------
+model AlbumMembership {
+  id        Int             @id @default(autoincrement()) // Unique membership ID
+  albumId   Int                                        // Album being joined
+  album     Album           @relation(fields: [albumId], references: [id])
+  userId    Int                                        // User who joined
+  user      User            @relation(fields: [userId], references: [id])
+  role      MembershipRole  @default(FRIEND)           // Friend or family
+  status    MembershipStatus @default(PENDING)        // Join status (pending/approved/rejected)
+  joinedAt  DateTime?                                     // Optional: timestamp when user joined
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([albumId, userId]) // A user can join an album only once
+  @@index([userId])
+  @@index([albumId, role])
+}
+
+// --------------------------
+// ALBUM REACTION
+// --------------------------
+model AlbumReaction {
+  id         Int          @id @default(autoincrement()) // Unique reaction ID
+  albumId    Int                                       // Album being reacted to
+  album      Album       @relation(fields: [albumId], references: [id])
+  userId     Int                                       // User who reacted
+  user       User        @relation(fields: [userId], references: [id])
+  type       ReactionType                              // LIKE or DISLIKE
+  createdAt  DateTime     @default(now())
+
+  @@unique([albumId, userId]) // One reaction per user per album
+  @@index([albumId])
+  @@index([userId])
+}
+
+// --------------------------
+// ALBUM COMMENT
+// --------------------------
+model AlbumComment {
+  id         Int       @id @default(autoincrement())     // Unique comment ID
+  albumId    Int                                        // Album commented on
+  album      Album     @relation(fields: [albumId], references: [id])
+  authorId   Int                                        // User who wrote the comment
+  author     User      @relation(fields: [authorId], references: [id])
+  parentId   Int?       // Optional parent comment for threading
+  parent     AlbumComment? @relation("commentReplies", fields: [parentId], references: [id])
+  replies    AlbumComment[] @relation("commentReplies")  // Replies to this comment
+  content    String                                     // Comment text
+  edited     Boolean   @default(false)                  // Has the comment been edited?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([albumId])
+  @@index([authorId])
 }
