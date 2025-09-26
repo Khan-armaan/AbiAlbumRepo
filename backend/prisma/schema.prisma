@@ -125,12 +125,6 @@ model Media {
   uploader     User      @relation("uploaderMedia", fields: [uploaderId], references: [id])
   type         MediaType @default(IMAGE)                 // Type of media: IMAGE/VIDEO/OTHER
   url          String                                     // Storage URL (S3/MinIO/CDN)
-  filename     String?                                    // Original filename
-  // mimeType     String?                                    // MIME type
-  // sizeBytes    Int?                                       // Size in bytes
-  // width        Int?                                       // Image/video width
-  // height       Int?                                       // Image/video height
-  // durationMs   Int?                                       // Duration for video
   caption      String?                                    // Optional caption
   metadata     Json?                                      // Optional metadata (EXIF, thumbnails, etc.)
 
