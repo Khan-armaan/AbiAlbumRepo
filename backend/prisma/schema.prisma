@@ -50,9 +50,11 @@ model User {
   id             Int                @id @default(autoincrement()) // Unique user ID
   name           String                                     // User's full name
   email          String             @unique                   // User email, must be unique
+  password      String                                     // Hashed password for authentication
   phone          String?            @unique                   // Optional phone number, unique if provided
   profileImage   String?                                   // URL of profile image
-  about          String?                                   // About me section
+  about          String?
+  refreshToken   String?                                   // Refresh token for user sessions
   albumsOwned    Album[]            @relation("ownerAlbums")  // Albums owned/created by this user
   mediaUploads   Media[]            @relation("uploaderMedia") // Media uploaded by the user
   memberships    AlbumMembership[]                             // Albums the user has joined as friend/family
