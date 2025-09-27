@@ -32,14 +32,14 @@ const ScrollingImageCards: React.FC = () => {
         scrollElement.scrollTo({ top: 0, behavior: 'smooth' });
         setScrollPosition(0);
       } else {
-        // Scroll down by 1 pixel
-        const newPosition = scrollPosition + 1;
+        // Scroll down by 2 pixels for faster scrolling
+        const newPosition = scrollPosition + 2;
         scrollElement.scrollTo({ top: newPosition, behavior: 'auto' });
         setScrollPosition(newPosition);
       }
     };
 
-    const intervalId = setInterval(scroll, 50); // Scroll every 50ms for smooth motion
+    const intervalId = setInterval(scroll, 30); // Scroll every 30ms for faster motion
 
     return () => clearInterval(intervalId);
   }, [scrollPosition, isHovered]);
@@ -69,7 +69,7 @@ const ScrollingImageCards: React.FC = () => {
             <div key={index} className="flex-shrink-0">
               <AnimatedImageCard
                 imageUrls={imageArray}
-                width="w-116"
+                width="w-114"
                 height="h-82"
                 animationDuration={2000 + (index * 200)} // Stagger animation timing
               />
@@ -80,8 +80,8 @@ const ScrollingImageCards: React.FC = () => {
             <div key={`duplicate-${index}`} className="flex-shrink-0">
               <AnimatedImageCard
                 imageUrls={imageArray}
-                width="w-96"
-                height="h-96"
+                width="w-114"
+                height="h-82"
                 animationDuration={2000 + (index * 200)}
               />
             </div>

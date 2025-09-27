@@ -22,16 +22,7 @@ export const Dashboard = () => {
           activityId="photos"
           title="MY PHOTOS"
         />
-        <MyActivity
-          backgroundImage={backgroundImage}
-          activityId="videos"
-          title="MY VIDEOS"
-        />
-        <MyActivity
-          backgroundImage={backgroundImage}
-          activityId="activities"
-          title="MY ACTIVITIES"
-        />
+      
       </div>
       
      
