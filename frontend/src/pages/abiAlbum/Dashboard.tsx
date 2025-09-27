@@ -1,5 +1,13 @@
 import MyActivity from "../../components/abiAlbum/MyActivity";
 import FriendsGrid from "../../components/abiAlbum/FreindsGrid";
+import AnimatedImageCard from "../../components/abiAlbum/ImageComponent";
+import ScrollingImageCards from "../../components/abiAlbum/ScrollingImageCards";
+
+// A list of sample images for the demo
+const sampleImages = [
+ "/src/assets/activity.png","/src/assets/activity.png",
+ "/src/assets/activity.png",
+];
 
 export const Dashboard = () => {
   // Using the attached blonde woman image - you can replace this with the actual image path
@@ -26,10 +34,17 @@ export const Dashboard = () => {
         />
       </div>
       
-      {/* Right Content Area - Friends Grid */}
+     
+      
+      {/* Right Content Area - Friends Grid and Scrolling Cards */}
       <div className="flex-1">
         <FriendsGrid />
+        <div className="mt-2">
+          <ScrollingImageCards />
+        </div>
       </div>
+
+    
     </div>
   );
 };

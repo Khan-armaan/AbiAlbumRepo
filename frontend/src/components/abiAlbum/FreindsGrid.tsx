@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import FriendCard from './FriendsCard'; // Adjust the import path as needed
   const backgroundImage = "/src/assets/activity.png"
 // Sample data for your friends
@@ -18,6 +18,38 @@ const friendsData = [
 ];
 
 const FriendsGrid: React.FC = () => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  const checkScrollButtons = () => {
+    if (gridRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = gridRef.current;
+      setCanScrollUp(scrollTop > 0);
+      setCanScrollDown(scrollTop < scrollHeight - clientHeight);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollButtons();
+  }, []);
+
+  const scrollUp = () => {
+    if (gridRef.current) {
+      gridRef.current.scrollBy({ top: -200, behavior: 'smooth' });
+      setTimeout(checkScrollButtons, 300);
+    }
+  };
+
+  const scrollDown = () => {
+    if (gridRef.current) {
+      gridRef.current.scrollBy({ top: 200, behavior: 'smooth' });
+      setTimeout(checkScrollButtons, 300);
+    }
+  };
+
+  const showScrollButtons = friendsData.length > 6;
+
   return (
     <div className="p-1 bg-transparent min-h-screen flex flex-col">
         <div className="flex justify-end">
@@ -27,8 +59,28 @@ const FriendsGrid: React.FC = () => {
 
         </div>
    
-      <div className="flex justify-end pr-8">
-        <div className="grid grid-cols-4 gap-1 w-fit">
+      <div className="flex justify-end pr-1 relative">
+        {/* Scroll Up Button */}
+        {/* {showScrollButtons && canScrollUp && (
+          <button
+            onClick={scrollUp}
+            className="absolute -top-4 right-1/2 transform translate-x-1/2 z-10 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-2 shadow-lg transition-all duration-200"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        )} */}
+
+        <div 
+          ref={gridRef}
+          className="grid grid-cols-4  w-fit max-h-48 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none'
+          }}
+          onScroll={checkScrollButtons}
+        >
           {friendsData.map((friend) => (
             <FriendCard
               key={friend.id}
@@ -39,6 +91,18 @@ const FriendsGrid: React.FC = () => {
             />
           ))}
         </div>
+
+        {/* Scroll Down Button
+        {showScrollButtons && canScrollDown && (
+          <button
+            onClick={scrollDown}
+            className="absolute -bottom-4 right-1/2 transform translate-x-1/2 z-10 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-2 shadow-lg transition-all duration-200"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        )} */}
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
       className="
         relative group w-25 h-25  rounded-xl overflow-hidden cursor-pointer
         shadow-lg transition-all duration-300 hover:scale-105
-        border border-white/20 hover:border-pink-400
+        border border-white/20 hover:border-pink-400 m-2
       "
     >
       {/* Background Image */}
