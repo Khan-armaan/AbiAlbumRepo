@@ -37,7 +37,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
         {/* Left Side - Logo and Home */}
         <div className="flex items-center space-x-4">
           {/* Company Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer">
            <img src={navbarLogo} alt="Logo" className="h-16 w-40 ml-6" />
             
           </div>
