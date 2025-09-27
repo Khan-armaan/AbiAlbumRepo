@@ -6,23 +6,31 @@ import {
 } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Cookies from "js-cookie";
+import { Layout } from "./layouts/abiAlbum/AbiLayout";
+import { Dashboard } from "./pages/abiAlbum/Dashboard";
 
 
 function App() {
   return (
     <Router>
       <Routes>
-       
-            <Route
-        path=""
-        element={
-          <ProtectedRoute
-            requiredRole=""
-            redirectPath=""
-          >
-            <div>Super Admin Dashboard</div>
-          </ProtectedRoute>
-        }/>
+        {/* AbiAlbum routes with Layout */}
+        <Route path="/abialbum" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
+
+        <Route
+          path=""
+          element={
+            <ProtectedRoute
+              requiredRole=""
+              redirectPath=""
+            >
+              <div>Super Admin Dashboard</div>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Default route - redirect based on role */}
         <Route path="/" element={<DefaultRedirect />} />
