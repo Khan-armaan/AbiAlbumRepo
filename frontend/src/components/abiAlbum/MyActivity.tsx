@@ -44,7 +44,7 @@ const MyActivity: React.FC<MyActivityProps> = ({
       {/* Play Button */}
       <div 
         className="
-          z-10 w-20 h-20 bg-white/90 rounded-full flex justify-center items-center
+          z-10 w-10 h-10 bg-white/90 rounded-full flex justify-center items-center
           shadow-lg mb-2 transition-transform duration-300 group-hover:bg-white"
       >
         <svg

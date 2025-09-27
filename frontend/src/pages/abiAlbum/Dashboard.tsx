@@ -1,4 +1,5 @@
 import MyActivity from "../../components/abiAlbum/MyActivity";
+import FriendsGrid from "../../components/abiAlbum/FreindsGrid";
 
 export const Dashboard = () => {
   // Using the attached blonde woman image - you can replace this with the actual image path
@@ -25,9 +26,9 @@ export const Dashboard = () => {
         />
       </div>
       
-      {/* Right Content Area - Can be expanded later */}
+      {/* Right Content Area - Friends Grid */}
       <div className="flex-1">
-        {/* Main content area for future use */}
+        <FriendsGrid />
       </div>
     </div>
   );
