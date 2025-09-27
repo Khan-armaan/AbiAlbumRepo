@@ -37,9 +37,9 @@ export const Dashboard = () => {
      
       
       {/* Right Content Area - Friends Grid and Scrolling Cards */}
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <FriendsGrid />
-        <div className="mt-2">
+        <div className="">
           <ScrollingImageCards />
         </div>
       </div>

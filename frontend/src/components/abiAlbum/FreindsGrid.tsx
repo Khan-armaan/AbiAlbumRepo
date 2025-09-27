@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import FriendCard from './FriendsCard'; // Adjust the import path as needed
   const backgroundImage = "/src/assets/activity.png"
 // Sample data for your friends
@@ -15,45 +15,19 @@ const friendsData = [
   { id: '120', name: 'Isabella', location: 'Rome, Italy', image: backgroundImage },
   { id: '111', name: 'Liam', location: 'Dublin, Ireland', image: backgroundImage },
   { id: '112', name: 'Chloe', location: 'Paris, France', image: backgroundImage },
+      { id: '113', name: 'Kenji', location: 'Osaka, Japan', image: backgroundImage },
+  { id: '114', name: 'Isabella', location: 'Rome, Italy', image: backgroundImage },
+  { id: '115', name: 'Liam', location: 'Dublin, Ireland', image: backgroundImage },
+  { id: '116', name: 'Chloe', location: 'Paris, France', image: backgroundImage },
 ];
 
 const FriendsGrid: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
-  const [canScrollUp, setCanScrollUp] = useState(false);
-  const [canScrollDown, setCanScrollDown] = useState(false);
-
-  const checkScrollButtons = () => {
-    if (gridRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = gridRef.current;
-      setCanScrollUp(scrollTop > 0);
-      setCanScrollDown(scrollTop < scrollHeight - clientHeight);
-    }
-  };
-
-  useEffect(() => {
-    checkScrollButtons();
-  }, []);
-
-  const scrollUp = () => {
-    if (gridRef.current) {
-      gridRef.current.scrollBy({ top: -200, behavior: 'smooth' });
-      setTimeout(checkScrollButtons, 300);
-    }
-  };
-
-  const scrollDown = () => {
-    if (gridRef.current) {
-      gridRef.current.scrollBy({ top: 200, behavior: 'smooth' });
-      setTimeout(checkScrollButtons, 300);
-    }
-  };
-
-  const showScrollButtons = friendsData.length > 6;
 
   return (
-    <div className="p-1 bg-transparent min-h-screen flex flex-col">
+    <div className="p-1 bg-transparent flex flex-col">
         <div className="flex justify-end">
-       <h4 className="text-3xl font-bold  text-white mb-8  max-w-md">
+       <h4 className="text-3xl font-bold  text-white mb-4 max-w-md">
         FRIENDS & FAMILY AROUND THE WORLD
       </h4>
 
@@ -74,12 +48,11 @@ const FriendsGrid: React.FC = () => {
 
         <div 
           ref={gridRef}
-          className="grid grid-cols-4  w-fit max-h-48 overflow-y-scroll [&::-webkit-scrollbar]:hidden"
+          className="grid grid-cols-4 w-fit max-h-60 overflow-y-auto [&::-webkit-scrollbar]:hidden"
           style={{ 
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none'
           }}
-          onScroll={checkScrollButtons}
         >
           {friendsData.map((friend) => (
             <FriendCard

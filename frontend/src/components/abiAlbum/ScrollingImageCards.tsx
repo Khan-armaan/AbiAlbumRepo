@@ -53,11 +53,11 @@ const ScrollingImageCards: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-end pr-1">
+    <div className="flex justify-end pr-1 mt-6">
       <div className="w-fit">
         <div
           ref={scrollRef}
-          className="flex flex-col space-y-3 h-48 overflow-hidden [&::-webkit-scrollbar]:hidden"
+          className="flex flex-col space-y-3 h-96 overflow-hidden [&::-webkit-scrollbar]:hidden"
           style={{ 
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none'
@@ -69,8 +69,8 @@ const ScrollingImageCards: React.FC = () => {
             <div key={index} className="flex-shrink-0">
               <AnimatedImageCard
                 imageUrls={imageArray}
-                width="w-32"
-                height="h-24"
+                width="w-116"
+                height="h-82"
                 animationDuration={2000 + (index * 200)} // Stagger animation timing
               />
             </div>
@@ -80,8 +80,8 @@ const ScrollingImageCards: React.FC = () => {
             <div key={`duplicate-${index}`} className="flex-shrink-0">
               <AnimatedImageCard
                 imageUrls={imageArray}
-                width="w-90"
-                height="h-90"
+                width="w-96"
+                height="h-96"
                 animationDuration={2000 + (index * 200)}
               />
             </div>
